@@ -1,4 +1,4 @@
-%% COVERAGE para antenas 8x8
+%%
 % SINR Map for a 5G urban Macro-cells test environment
 
 % Define a antena transmissora central
@@ -139,8 +139,14 @@ coverage(txs,'longley-rice', ...
 %coverage(txs,"PropagationModel",prop_model)
 
 
+%% Display radiation pattern
+%
 
-%% Antenas e seus diagramas de radiacao
+
+
+
+
+%% Antennas
 
 %All these microstrip antennas consisting of PCB with 6.6 mm thickness with dielectric
 %constant EpsilionR 4.2, and loss-tangent of 0.02, and square ground plane of 100 mm x 100 mm,
@@ -388,7 +394,7 @@ title('Radiation diagram antena triangular');
 %cellAntenna.Element = patchElement;
 
 
-%% SINR PARA UMA ANTENA
+%%
 % ------------- Mapa de SINR para uma antena -------------
 
 viewer = siteviewer("Name","SINR uma antena por cel","Basemap","openstreetmap","Buildings",mapa_osm);
@@ -422,7 +428,7 @@ sinr(txs,'longley-rice', ...
 
 
 
-%% SINR PARA ARRAY ANTENAS 8X8
+%%
 % Array retangular de 8 por 8 antenas
 % E SINR
 
@@ -513,33 +519,7 @@ sinr(txs,'longley-rice', ...
 
 % Antenas direcionais
 
-%% COVERAGE para antenas 8x8
-
-% Launch Site Viewer
-mapa_osm="map.osm";
-viewer = siteviewer("Name","Coverage","Basemap","openstreetmap","Buildings",mapa_osm);
-viewer.Basemap = 'topographic';
-%viewer = siteviewer;
-% Show sites on a map
-show(txs);
-
-
-%Receiver
-%Casa 39.74120486553289, -8.814761942942786
-rx = rxsite('Name','Casa carlos', ...
-       'Latitude',39.74120, ...
-       'Longitude',-8.81476)
-show(rx);
-
-% Mapa de cobertura do transmissor
-coverage(txs,'longley-rice', ...
-       'SignalStrengths',-100:5:-60);
-
-%viewer = siteviewer("Basemap","openstreetmap","Buildings",mapa_osm);
-%viewer.Basemap = 'topographic';
-% Show sites on a map
-%show(txs);
-%% BEST TX (REMOVE?)
+%% 
 mapa_osm="map.osm";
 viewer = siteviewer("Name","BestTx","Basemap","openstreetmap","Buildings",mapa_osm);
 viewer.Basemap = 'topographic';
@@ -986,133 +966,14 @@ plot(pd, "LegendTitle", legendTitle, "Colormap", 'turbo');            % plot poi
 contour(pd, "LegendTitle", legendTitle, "Colormap", 'turbo');         % plot countour
 
 
-%% Simulacao ESTG v2
-% ========================================================================
-% Get file from measurement file
-% ========================================================================
-
-mapa_osm="map_estg.osm";    
-
-
-
-fid = fopen('exemploFicheiroMediçãoCarlos.txt');
-C = textscan(fid, '%f%f%f','Delimiter',',');
-Latitude=C{1,1};
-Longitude=C{1,2};
-signalStrength=C{1,3};
-% signalStrength= smoothdata(C{1,3},'gaussian',30);                   % filtered data if need be
-
-% ========================================================================
-% Set Transmitter Position and Height 
-% ========================================================================
-
-% Define transmitter parameters using Table 8-2 (b) of Report ITU-R M.[IMT-2020.EVAL]
-fq = 2.6e9; % Carrier frequency (4 GHz) for Dense Urban-eMBB
-antHeight = 3; % m
-G=5.9;
-txPowerDBm = 0 + G; % Total transmit power in dBm
-txPower = 10.^((txPowerDBm-30)/10); % Convert dBm to W
-
-cellName='Sim antena';
-cellAngles=0;
-
-cellLat=39.735220;
-cellLon=-8.820404;
-
-% Create cell transmitter sites
-tx = txsite('Name',cellName, ...
-    'Latitude',cellLat, ...
-    'Longitude',cellLon, ...
-    'AntennaAngle',cellAngles, ...
-    'AntennaHeight',antHeight, ...
-    'TransmitterFrequency',fq, ...
-    'TransmitterPower',txPower);
-
-
-% Define pattern parameters
-azvec = -180:180;
-elvec = -90:90;
-
-Am = 7; % Maximum attenuation (dB)
-
-tilt = 0; % Tilt angle
-az3dB = 60; % 3 dB bandwidth in azimuth
-el3dB = 70; % 3 dB bandwidth in elevation
-
-%Antenna factor é 32.69
-
-% Define antenna pattern
-[az,el] = meshgrid(azvec,elvec);
-azMagPattern = -12*(az/az3dB).^2;
-elMagPattern = -12*((el-tilt)/el3dB).^2;
-combinedMagPattern = azMagPattern + elMagPattern;
-combinedMagPattern(combinedMagPattern<-Am) = -Am; % Saturate at max attenuation
-phasepattern = zeros(size(combinedMagPattern));
-
-antennaElement = phased.CustomAntennaElement(...
-    'AzimuthAngles',azvec, ...
-    'ElevationAngles',elvec, ...
-    'MagnitudePattern',combinedMagPattern, ...
-    'PhasePattern',phasepattern);
-   
-tx.Antenna = antennaElement;
-
-
-% ========================================================================
-% Calculate signal strength
-% ========================================================================
-number_rx=length(Latitude);
-
-% for i=1:number_rx
-% 
-%     %Casa 39.74120486553289, -8.814761942942786
-%     rx = rxsite('Name','Carro 1', ...
-%            'Latitude',Latitude(i,1), ...
-%            'Longitude',Longitude(i,1));
-%     %show(rx)
-%     sigStrDif(i,1) = sigstrength(rx,tx,"raytracing");
-%     fprintf('Recetor numero %d / %d feito\n', i, number_rx)
-% 
-% end
-
-rx = rxsite('Latitude',Latitude, ...
-       'Longitude',Longitude);
-sigStrDif = sigstrength(rx,tx,"raytracing")';
-%fid = fopen('exemploFicheiroMediçãoCarlos.txt');
-%C = textscan(fid, '%f%f%f','Delimiter',',');
-%Latitude=C{1,1};
-%Longitude=C{1,2};
-%signalStrength=C{1,3};
-signalStrength=sigStrDif;
-% signalStrength= smoothdata(C{1,3},'gaussian',30);                   % filtered data if need be
-
-% ========================================================================
-% Process data: arrange for siteViewer format
-% ========================================================================
-
-tbl = table(Latitude, Longitude, signalStrength);
-pd = propagationData(tbl);
-
-% ========================================================================
-% PLOT data in site viewer
-% ========================================================================
-viewer = siteviewer("Name","Simulacao ESTG v2","Basemap","openstreetmap","Buildings",mapa_osm);
-viewer.Basemap = 'topographic';
-legendTitle = "RSSI" + newline + "(dBm)";                             % plot legend  
-
-plot(pd, "LegendTitle", legendTitle, "Colormap", 'turbo');            % plot points
-contour(pd, "LegendTitle", legendTitle, "Colormap", 'turbo');         % plot countour
-
-show(tx);
-
 %% Erro das medições e simulados
 % ========================================================================
 % Get file from measurement file
 % ========================================================================
 
 mapa_osm="map_estg.osm";    
-viewer = siteviewer("Name","Medição vs Simulacao ESTG","Basemap","openstreetmap","Buildings",mapa_osm);
-viewer.Basemap = 'topographic';
+viewer = siteviewer("Name","Medição ESTG","Basemap","openstreetmap","Buildings",mapa_osm);
+viewer.Basemap = 'topographic'
 
 
 fid = fopen('exemploFicheiroMediçãoCarlos.txt');
@@ -1120,92 +981,6 @@ C = textscan(fid, '%f%f%f','Delimiter',',');
 Latitude=C{1,1};
 Longitude=C{1,2};
 signalStrength=C{1,3};
-% signalStrength= smoothdata(C{1,3},'gaussian',30);                   % filtered data if need be
-
-% ========================================================================
-% Set Transmitter Position and Height 
-% ========================================================================
-
-% Define transmitter parameters using Table 8-2 (b) of Report ITU-R M.[IMT-2020.EVAL]
-fq = 2.6e9; % Carrier frequency (4 GHz) for Dense Urban-eMBB
-antHeight = 3; % m
-G=5.9;
-txPowerDBm = 0 + G; % Total transmit power in dBm
-txPower = 10.^((txPowerDBm-30)/10); % Convert dBm to W
-
-cellName='Sim antena';
-cellAngles=0;
-
-cellLat=39.735220;
-cellLon=-8.820404;
-
-% Create cell transmitter sites
-tx = txsite('Name',cellName, ...
-    'Latitude',cellLat, ...
-    'Longitude',cellLon, ...
-    'AntennaAngle',cellAngles, ...
-    'AntennaHeight',antHeight, ...
-    'TransmitterFrequency',fq, ...
-    'TransmitterPower',txPower);
-
-
-% Define pattern parameters
-azvec = -180:180;
-elvec = -90:90;
-
-Am = 7; % Maximum attenuation (dB)
-
-tilt = 0; % Tilt angle
-az3dB = 60; % 3 dB bandwidth in azimuth
-el3dB = 70; % 3 dB bandwidth in elevation
-
-%Antenna factor é 32.69
-
-% Define antenna pattern
-[az,el] = meshgrid(azvec,elvec);
-azMagPattern = -12*(az/az3dB).^2;
-elMagPattern = -12*((el-tilt)/el3dB).^2;
-combinedMagPattern = azMagPattern + elMagPattern;
-combinedMagPattern(combinedMagPattern<-Am) = -Am; % Saturate at max attenuation
-phasepattern = zeros(size(combinedMagPattern));
-
-antennaElement = phased.CustomAntennaElement(...
-    'AzimuthAngles',azvec, ...
-    'ElevationAngles',elvec, ...
-    'MagnitudePattern',combinedMagPattern, ...
-    'PhasePattern',phasepattern);
-   
-tx.Antenna = antennaElement;
-
-show(tx);
-
-% ========================================================================
-% Calculate difference in covid
-% ========================================================================
-number_rx=length(Latitude);
-% 
-% for i=1:number_rx
-% 
-%     Casa 39.74120486553289, -8.814761942942786
-%     rx = rxsite('Name','Carro 1', ...
-%            'Latitude',Latitude(i,1), ...
-%            'Longitude',Longitude(i,1));
-%     show(rx)
-%     sigStrDif(i,1) = sigstrength(rx,tx);
-%     fprintf('Recetor numero %d / %d feito\n', i, number_rx)
-% 
-% end
-
-rx = rxsite('Latitude',Latitude, ...
-       'Longitude',Longitude);
-sigStrDif = sigstrength(rx,tx,"raytracing")';
-
-%fid = fopen('exemploFicheiroMediçãoCarlos.txt');
-%C = textscan(fid, '%f%f%f','Delimiter',',');
-%Latitude=C{1,1};
-%Longitude=C{1,2};
-%signalStrength=C{1,3};
-signalStrength=sigStrDif-signalStrength;
 % signalStrength= smoothdata(C{1,3},'gaussian',30);                   % filtered data if need be
 
 % ========================================================================
@@ -1213,26 +988,24 @@ signalStrength=sigStrDif-signalStrength;
 % ========================================================================
 lat = 39.735143;
 lon =  -8.820529;
-%tx = txsite("Latitude",lat,...
-%            "Longitude",lon,...
-%            "AntennaHeight",3, 'TransmitterFrequency', 2.6e9);
-%show(tx);
-
-
+tx = txsite("Latitude",lat,...
+            "Longitude",lon,...
+            "AntennaHeight",3, 'TransmitterFrequency', 2.6e9);
+show(tx);
 
 % ========================================================================
-% Process data: arrange for siteViewer format
+% Calculate difference in covid
 % ========================================================================
+number_rx=length(Latitude);
 
-tbl = table(Latitude, Longitude, signalStrength);
-pd = propagationData(tbl);
+for i=1:number_rx
 
-% ========================================================================
-% PLOT data in site viewer
-% ========================================================================
-legendTitle = "RSSI" + newline + "(dBm)";                             % plot legend  
+    %Casa 39.74120486553289, -8.814761942942786
+    rx = rxsite('Name','Carro 1', ...
+           'Latitude',Latitude(i,1), ...
+           'Longitude',Longitude(i,1))
+    %show(rx)
+    sigStrDif(i) = sigstrength(rx,tx);
 
-plot(pd, "LegendTitle", legendTitle, "Colormap", 'turbo');            % plot points
-contour(pd, "LegendTitle", legendTitle, "Colormap", 'turbo');         % plot countour
-
+end
 
