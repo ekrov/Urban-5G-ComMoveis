@@ -11,7 +11,8 @@ centerSite = txsite('Name','MathWorks Glasgow', ...
     'Longitude',-8.80763);
 
 % ------------- Criar as antenas adjacentes -------------
-numCellSites = 19;
+% numCellSites = 19;
+numCellSites = 7;
 siteDistances = zeros(1,numCellSites);
 siteAngles = zeros(1,numCellSites);
 
@@ -20,14 +21,14 @@ isd = 1000; % Inter-site distance
 siteDistances(2:7) = isd;
 siteAngles(2:7) = 30:60:360;
 
-% Definir distancia e angulo entre antenas a uma distancia media
-siteDistances(8:13) = 2*isd*cosd(30);
-siteAngles(8:13) = 0:60:300;
-
-% Definir distancia e angulo entre antenas a uma distancia alta
-
-siteDistances(14:19) = 2*isd;
-siteAngles(14:19) = 30:60:360;
+% % Definir distancia e angulo entre antenas a uma distancia media
+% siteDistances(8:13) = 2*isd*cosd(30);
+% siteAngles(8:13) = 0:60:300;
+% 
+% % Definir distancia e angulo entre antenas a uma distancia alta
+% 
+% siteDistances(14:19) = 2*isd;
+% siteAngles(14:19) = 30:60:360;
 
 % ------------- Definir parametros das células -------------
 
@@ -77,11 +78,11 @@ txs = txsite('Name',cellNames, ...
 
 % Launch Site Viewer
 mapa_osm="map.osm";
-viewer = siteviewer("Name","Coverage","Basemap","openstreetmap","Buildings",mapa_osm);
-viewer.Basemap = 'topographic';
-%viewer = siteviewer;
-% Show sites on a map
-show(txs);
+% viewer = siteviewer("Name","Coverage","Basemap","openstreetmap","Buildings",mapa_osm);
+% viewer.Basemap = 'topographic';
+% %viewer = siteviewer;
+% % Show sites on a map
+% show(txs);
 
 
 %Receiver
@@ -89,7 +90,7 @@ show(txs);
 rx = rxsite('Name','Casa carlos', ...
        'Latitude',39.74120, ...
        'Longitude',-8.81476)
-show(rx)
+% show(rx)
 
 
 %Distancia entre antenas
@@ -110,11 +111,11 @@ ss = sigstrength(rx,txs);
 margin = abs(rx.ReceiverSensitivity - ss);
 
 % Link de comunicações no mapa
-link(rx,txs)
-
-% Mapa de cobertura do transmissor
-coverage(txs,'longley-rice', ...
-       'SignalStrengths',-100:5:-60)
+% link(rx,txs)
+% 
+%% Mapa de cobertura do transmissor
+% coverage(txs,'longley-rice', ...
+%        'SignalStrengths',-100:5:-60)
 
 %viewer = siteviewer("Basemap","openstreetmap","Buildings",mapa_osm);
 %viewer.Basemap = 'topographic';
@@ -277,18 +278,18 @@ p_mc.FeedDiameter=1.3e-3;
 % polarpattern(t10,fm);
 
 figure(2);
-[fmt,~,t10] = pattern(p_triang,2.60e9,0,0:360); 
-[fmr,~,t11] = pattern(p_rect,2.60e9,0,0:360); 
-[fmc,~,t12] = pattern(p_Circle,2.60e9,0,0:360); 
-[fm,~,t10] = pattern(p_mc,2.60e9,0,0:360);
+% [fmt,~,t10] = pattern(p_triang,2.60e9,0,0:360); 
+% [fmr,~,t11] = pattern(p_rect,2.60e9,0,0:360); 
+% [fmc,~,t12] = pattern(p_Circle,2.60e9,0,0:360); 
+% [fm,~,t10] = pattern(p_mc,2.60e9,0,0:360);
+% 
+% p=polarpattern(t10,fmt,t10,fmr,t10,fmc,t10,fm);
+% legend('Antena triangular', 'Antena rectangular', 'Antena circular','Antena rect + triang');
+% title('Polar pattern of antennas');
 
-p=polarpattern(t10,fmt,t10,fmr,t10,fmc,t10,fm);
-legend('Antena triangular', 'Antena rectangular', 'Antena circular','Antena rect + triang');
-title('Polar pattern of antennas');
-
-figure; 
-pattern(p_triang,2.60e9);
-title('Radiation diagram antena triangular');
+% figure; 
+% pattern(p_triang,2.60e9);
+% title('Radiation diagram antena triangular');
 
 
 %%
@@ -397,8 +398,8 @@ title('Radiation diagram antena triangular');
 %%
 % ------------- Mapa de SINR para uma antena -------------
 
-viewer = siteviewer("Name","SINR uma antena por cel","Basemap","openstreetmap","Buildings",mapa_osm);
-viewer.Basemap = 'topographic';
+% viewer = siteviewer("Name","SINR uma antena por cel","Basemap","openstreetmap","Buildings",mapa_osm);
+% viewer.Basemap = 'topographic';
 
 
 % Assign the antenna element for each cell transmitter
@@ -413,17 +414,17 @@ rxNoisePower = -174 + 10*log10(bw) + rxNoiseFigure;
 rxGain = 0; % dBi
 rxAntennaHeight = 1.5; % m
 
-% Display SINR map
-if isvalid(f)
-    close(f)
-end
-%sinr(txs,'freespace', ...
-sinr(txs,'longley-rice', ...
-    'ReceiverGain',rxGain, ...
-    'ReceiverAntennaHeight',rxAntennaHeight, ...
-    'ReceiverNoisePower',rxNoisePower, ...    
-    'MaxRange',isd, ...
-    'Resolution',isd/20)
+% % Display SINR map
+% if isvalid(f)
+%     close(f)
+% end
+% %sinr(txs,'freespace', ...
+% sinr(txs,'longley-rice', ...
+%     'ReceiverGain',rxGain, ...
+%     'ReceiverAntennaHeight',rxAntennaHeight, ...
+%     'ReceiverNoisePower',rxNoisePower, ...    
+%     'MaxRange',isd, ...
+%     'Resolution',isd/20)
 
 
 
