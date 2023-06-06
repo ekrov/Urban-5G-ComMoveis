@@ -1014,10 +1014,13 @@ txPowerDBm = 0 + G; % Total transmit power in dBm
 txPower = 10.^((txPowerDBm-30)/10); % Convert dBm to W
 
 cellName='Sim antena';
-cellAngles=0;
+cellAngles=-90;
 
-cellLat=39.735220;
-cellLon=-8.820404;
+%lat = 39.735143;
+%lon =  -8.820529;
+
+cellLat=39.735143;
+cellLon=-8.820529;
 
 % Create cell transmitter sites
 tx = txsite('Name',cellName, ...
@@ -1104,7 +1107,7 @@ plot(pd, "LegendTitle", legendTitle, "Colormap", 'turbo');            % plot poi
 contour(pd, "LegendTitle", legendTitle, "Colormap", 'turbo');         % plot countour
 
 show(tx);
-
+pattern(tx);
 %% Erro das medições e simulados
 % ========================================================================
 % Get file from measurement file
@@ -1134,10 +1137,10 @@ txPowerDBm = 0 + G; % Total transmit power in dBm
 txPower = 10.^((txPowerDBm-30)/10); % Convert dBm to W
 
 cellName='Sim antena';
-cellAngles=0;
+cellAngles=-90;
 
-cellLat=39.735220;
-cellLon=-8.820404;
+cellLat=39.735143;
+cellLon=-8.820529;
 
 % Create cell transmitter sites
 tx = txsite('Name',cellName, ...
@@ -1178,7 +1181,7 @@ antennaElement = phased.CustomAntennaElement(...
 tx.Antenna = antennaElement;
 
 show(tx);
-
+pattern(tx);
 % ========================================================================
 % Calculate difference in covid
 % ========================================================================
@@ -1198,6 +1201,14 @@ number_rx=length(Latitude);
 
 rx = rxsite('Latitude',Latitude, ...
        'Longitude',Longitude);
+   
+   
+% rtpm = propagationModel("raytracing", ...
+%     "Method","sbr", ...
+%     "MaxNumReflections",1, ...
+%     "BuildingsMaterial","perfect-reflector", ...
+%     "TerrainMaterial","perfect-reflector");   
+   
 sigStrDif = sigstrength(rx,tx,"raytracing")';
 
 %fid = fopen('exemploFicheiroMediçãoCarlos.txt');
