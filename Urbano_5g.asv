@@ -78,13 +78,20 @@ txs = txsite('Name',cellNames, ...
     'TransmitterFrequency',fq, ...
     'TransmitterPower',txPower);
 
+% Create cell transmitter sites
+rxs = rxsite('Name',cellNames_rx, ...
+    'Latitude',cellLats, ...
+    'Longitude',cellLons, ...
+    'AntennaAngle',cellAngles, ...
+    'AntennaHeight',antHeight);
+
 % Launch Site Viewer
 mapa_osm="map.osm";
-viewer = siteviewer("Name","Coverage","Basemap","openstreetmap","Buildings",mapa_osm);
-viewer.Basemap = 'topographic';
-%viewer = siteviewer;
-% Show sites on a map
-show(txs);
+% viewer = siteviewer("Name","Coverage","Basemap","openstreetmap","Buildings",mapa_osm);
+% viewer.Basemap = 'topographic';
+% %viewer = siteviewer;
+% % Show sites on a map
+% show(txs);
 
 
 %Receiver
@@ -115,26 +122,6 @@ show(txs);
 % Link de comunicações no mapa
 % link(rx,txs)
 % 
-
-%% Links entre todas as estações base
-% Create cell transmitter sites
-rxs = rxsite('Name',cellNames_rx, ...
-    'Latitude',cellLats, ...
-    'Longitude',cellLons, ...
-    'AntennaAngle',cellAngles, ...
-    'AntennaHeight',antHeight);
-
-% Launch Site Viewer
-mapa_osm="map.osm";
-viewer = siteviewer("Name","LOS between Base Stations","Basemap","openstreetmap","Buildings",mapa_osm);
-viewer.Basemap = 'topographic';
-
-show(txs)
-show(rxs)
-for tx = txs
-    los(tx, rxs)
-end
-
 %% Mapa de cobertura do transmissor
 % coverage(txs,'longley-rice', ...
 %        'SignalStrengths',-100:5:-60)
