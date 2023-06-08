@@ -393,6 +393,79 @@ title('Radiation diagram antena triangular');
 
 viewer = siteviewer("Name","SINR uma antena por cel","Basemap","openstreetmap","Buildings",mapa_osm);
 viewer.Basemap = 'topographic';
+rx = rxsite('Name','Casa carlos', ...
+       'Latitude',39.74120, ...
+       'Longitude',-8.81476)
+show(rx)
+
+% -8.807632630982194 -------------
+centerSite = txsite('Name','MathWorks Glasgow', ...
+    'Latitude',39.74422,...
+    'Longitude',-8.80763);
+
+% ------------- Criar as antenas adjacentes -------------
+numCellSites = 7;
+siteDistances = zeros(1,numCellSites);
+siteAngles = zeros(1,numCellSites);
+
+% Definir distance e angulo entre antenas centrais
+isd = 1500; % Inter-site distance
+siteDistances(2:7) = isd;
+siteAngles(2:7) = 30:60:360;
+
+% Definir distancia e angulo entre antenas a uma distancia media
+%siteDistances(8:13) = 2*isd*cosd(30);
+%siteAngles(8:13) = 0:60:300;
+
+% Definir distancia e angulo entre antenas a uma distancia alta
+
+%siteDistances(14:19) = 2*isd;
+%siteAngles(14:19) = 30:60:360;
+
+% ------------- Definir parametros das células -------------
+
+% Initialize arrays for cell transmitter parameters
+numCells = numCellSites*3;
+cellLats = zeros(1,numCells);
+cellLons = zeros(1,numCells);
+cellNames = strings(1,numCells);
+cellAngles = zeros(1,numCells);
+
+% Define cell sector angles
+cellSectorAngles = [30 150 270];
+
+% For each cell site location, populate data for each cell transmitter
+cellInd = 1;
+for siteInd = 1:numCellSites
+    % Compute site location using distance and angle from center site
+    [cellLat,cellLon] = location(centerSite, siteDistances(siteInd), siteAngles(siteInd));
+    
+    % Assign values for each cell
+    for cellSectorAngle = cellSectorAngles
+        cellNames(cellInd) = "Cell " + cellInd;
+        cellLats(cellInd) = cellLat;
+        cellLons(cellInd) = cellLon;
+        cellAngles(cellInd) = cellSectorAngle;
+        cellInd = cellInd + 1;
+    end
+end
+
+% ------------- Criar os transmissores -------------
+
+% Define transmitter parameters using Table 8-2 (b) of Report ITU-R M.[IMT-2020.EVAL]
+fq = 2.6e9; % Carrier frequency (4 GHz) for Dense Urban-eMBB
+antHeight = 25; % m
+txPowerDBm = 44; % Total transmit power in dBm
+txPower = 10.^((txPowerDBm-30)/10); % Convert dBm to W
+
+% Create cell transmitter sites
+txs = txsite('Name',cellNames, ...
+    'Latitude',cellLats, ...
+    'Longitude',cellLons, ...
+    'AntennaAngle',cellAngles, ...
+    'AntennaHeight',antHeight, ...
+    'TransmitterFrequency',fq, ...
+    'TransmitterPower',txPower);
 
 
 % Assign the antenna element for each cell transmitter
@@ -425,6 +498,79 @@ sinr(txs,'longley-rice', ...
 %% SINR PARA ARRAY ANTENAS 8X8
 % Array retangular de 8 por 8 antenas
 % E SINR
+%rx = rxsite('Name','Casa carlos', ...
+%       'Latitude',39.74120, ...
+%       'Longitude',-8.81476)
+%show(rx)
+
+% -8.807632630982194 -------------
+centerSite = txsite('Name','MathWorks Glasgow', ...
+    'Latitude',39.74422,...
+    'Longitude',-8.80763);
+
+% ------------- Criar as antenas adjacentes -------------
+numCellSites = 7;
+siteDistances = zeros(1,numCellSites);
+siteAngles = zeros(1,numCellSites);
+
+% Definir distance e angulo entre antenas centrais
+isd = 1500; % Inter-site distance
+siteDistances(2:7) = isd;
+siteAngles(2:7) = 30:60:360;
+
+% Definir distancia e angulo entre antenas a uma distancia media
+%siteDistances(8:13) = 2*isd*cosd(30);
+%siteAngles(8:13) = 0:60:300;
+
+% Definir distancia e angulo entre antenas a uma distancia alta
+
+%siteDistances(14:19) = 2*isd;
+%siteAngles(14:19) = 30:60:360;
+
+% ------------- Definir parametros das células -------------
+
+% Initialize arrays for cell transmitter parameters
+numCells = numCellSites*3;
+cellLats = zeros(1,numCells);
+cellLons = zeros(1,numCells);
+cellNames = strings(1,numCells);
+cellAngles = zeros(1,numCells);
+
+% Define cell sector angles
+cellSectorAngles = [30 150 270];
+
+% For each cell site location, populate data for each cell transmitter
+cellInd = 1;
+for siteInd = 1:numCellSites
+    % Compute site location using distance and angle from center site
+    [cellLat,cellLon] = location(centerSite, siteDistances(siteInd), siteAngles(siteInd));
+    
+    % Assign values for each cell
+    for cellSectorAngle = cellSectorAngles
+        cellNames(cellInd) = "Cell " + cellInd;
+        cellLats(cellInd) = cellLat;
+        cellLons(cellInd) = cellLon;
+        cellAngles(cellInd) = cellSectorAngle;
+        cellInd = cellInd + 1;
+    end
+end
+
+% ------------- Criar os transmissores -------------
+
+% Define transmitter parameters using Table 8-2 (b) of Report ITU-R M.[IMT-2020.EVAL]
+fq = 2.6e9; % Carrier frequency (4 GHz) for Dense Urban-eMBB
+antHeight = 25; % m
+txPowerDBm = 44; % Total transmit power in dBm
+txPower = 10.^((txPowerDBm-30)/10); % Convert dBm to W
+
+% Create cell transmitter sites
+txs = txsite('Name',cellNames, ...
+    'Latitude',cellLats, ...
+    'Longitude',cellLons, ...
+    'AntennaAngle',cellAngles, ...
+    'AntennaHeight',antHeight, ...
+    'TransmitterFrequency',fq, ...
+    'TransmitterPower',txPower);
 
 % Define array size
 nrow = 8;
@@ -540,124 +686,124 @@ coverage(txs,'longley-rice', ...
 % Show sites on a map
 %show(txs);
 %% BEST TX (REMOVE?)
-% mapa_osm="map.osm";
-% viewer = siteviewer("Name","BestTx","Basemap","openstreetmap","Buildings",mapa_osm);
-% viewer.Basemap = 'topographic';
-% %Show sites on a map
-% 
-% %Receiver
-% %Casa 39.74120486553289, -8.814761942942786
-% rx = rxsite('Name','Casa carlos', ...
-%        'Latitude',39.74120, ...
-%        'Longitude',-8.81476)
-% show(rx)
-% 
-% % -8.807632630982194 -------------
-% centerSite = txsite('Name','MathWorks Glasgow', ...
-%     'Latitude',39.74422,...
-%     'Longitude',-8.80763);
-% 
-% % ------------- Criar as antenas adjacentes -------------
-% numCellSites = 19;
-% siteDistances = zeros(1,numCellSites);
-% siteAngles = zeros(1,numCellSites);
-% 
-% % Definir distance e angulo entre antenas centrais
-% isd = 1000; % Inter-site distance
-% siteDistances(2:7) = isd;
-% siteAngles(2:7) = 30:60:360;
-% 
-% % Definir distancia e angulo entre antenas a uma distancia media
-% siteDistances(8:13) = 2*isd*cosd(30);
-% siteAngles(8:13) = 0:60:300;
-% 
-% % Definir distancia e angulo entre antenas a uma distancia alta
-% 
-% siteDistances(14:19) = 2*isd;
-% siteAngles(14:19) = 30:60:360;
-% 
-% % ------------- Definir parametros das células -------------
-% 
-% % Initialize arrays for cell transmitter parameters
-% numCells = numCellSites*3;
-% cellLats = zeros(1,numCells);
-% cellLons = zeros(1,numCells);
-% cellNames = strings(1,numCells);
-% cellAngles = zeros(1,numCells);
-% 
-% % Define cell sector angles
-% cellSectorAngles = [30 150 270];
-% 
-% % For each cell site location, populate data for each cell transmitter
-% cellInd = 1;
-% for siteInd = 1:numCellSites
-%     % Compute site location using distance and angle from center site
-%     [cellLat,cellLon] = location(centerSite, siteDistances(siteInd), siteAngles(siteInd));
-%     
-%     % Assign values for each cell
-%     for cellSectorAngle = cellSectorAngles
-%         cellNames(cellInd) = "Cell " + cellInd;
-%         cellLats(cellInd) = cellLat;
-%         cellLons(cellInd) = cellLon;
-%         cellAngles(cellInd) = cellSectorAngle;
-%         cellInd = cellInd + 1;
-%     end
-% end
-% 
-% % ------------- Criar os transmissores -------------
-% 
-% % Define transmitter parameters using Table 8-2 (b) of Report ITU-R M.[IMT-2020.EVAL]
-% fq = 2.6e9; % Carrier frequency (4 GHz) for Dense Urban-eMBB
-% antHeight = 25; % m
-% txPowerDBm = 44; % Total transmit power in dBm
-% txPower = 10.^((txPowerDBm-30)/10); % Convert dBm to W
-% 
-% % Create cell transmitter sites
-% txs = txsite('Name',cellNames, ...
-%     'Latitude',cellLats, ...
-%     'Longitude',cellLons, ...
-%     'AntennaAngle',cellAngles, ...
-%     'AntennaHeight',antHeight, ...
-%     'TransmitterFrequency',fq, ...
-%     'TransmitterPower',txPower);
-% 
-% show(txs);
-% %Distancia entre antenas
-% 
-% dm = distance(txs,rx) % Unit: m
-% dkm = dm / 1000
-% 
-% %Angulo entre antenas
-% azFromEast = angle(txs,rx); % Unit: degrees counter-clockwise from East
-% 
-% azFromNorth = -azFromEast + 90; % Convert angle to clockwise from North
-% 
-% % Potencia recebida 
-% max_value=-200;
-% 
-% for tx = txs 
-%     ss = sigstrength(rx,tx);
-%     if(ss>max_value)
-%         best_tx=tx;
-%         max_value=ss;
-%     end
-% end
-% 
-% % Link margin ( uma métrica da robustes da comunicação, calculado
-% % subtraindo a sensividade do recetor e a potencia recebida
-% margin = abs(rx.ReceiverSensitivity - ss);
-% 
-% % Link de comunicações no mapa
-% %link(rx,txs)
-% link(rx,best_tx)
-% 
-% % Mapa de cobertura do transmissor
-% %coverage(txs,'longley-rice','SignalStrengths',-100:5:-60)
-% 
-% %viewer = siteviewer("Basemap","openstreetmap","Buildings",mapa_osm);
-% %viewer.Basemap = 'topographic';
-% % Show sites on a map
-% %show(txs);
+mapa_osm="map.osm";
+viewer = siteviewer("Name","BestTx","Basemap","openstreetmap","Buildings",mapa_osm);
+viewer.Basemap = 'topographic';
+%Show sites on a map
+
+%Receiver
+%Casa 39.74120486553289, -8.814761942942786
+rx = rxsite('Name','Casa carlos', ...
+       'Latitude',39.74120, ...
+       'Longitude',-8.81476)
+show(rx)
+
+% -8.807632630982194 -------------
+centerSite = txsite('Name','MathWorks Glasgow', ...
+    'Latitude',39.74422,...
+    'Longitude',-8.80763);
+
+% ------------- Criar as antenas adjacentes -------------
+numCellSites = 7;
+siteDistances = zeros(1,numCellSites);
+siteAngles = zeros(1,numCellSites);
+
+% Definir distance e angulo entre antenas centrais
+isd = 1500; % Inter-site distance
+siteDistances(2:7) = isd;
+siteAngles(2:7) = 30:60:360;
+
+% Definir distancia e angulo entre antenas a uma distancia media
+%siteDistances(8:13) = 2*isd*cosd(30);
+%siteAngles(8:13) = 0:60:300;
+
+% Definir distancia e angulo entre antenas a uma distancia alta
+
+%siteDistances(14:19) = 2*isd;
+%siteAngles(14:19) = 30:60:360;
+
+% ------------- Definir parametros das células -------------
+
+% Initialize arrays for cell transmitter parameters
+numCells = numCellSites*3;
+cellLats = zeros(1,numCells);
+cellLons = zeros(1,numCells);
+cellNames = strings(1,numCells);
+cellAngles = zeros(1,numCells);
+
+% Define cell sector angles
+cellSectorAngles = [30 150 270];
+
+% For each cell site location, populate data for each cell transmitter
+cellInd = 1;
+for siteInd = 1:numCellSites
+    % Compute site location using distance and angle from center site
+    [cellLat,cellLon] = location(centerSite, siteDistances(siteInd), siteAngles(siteInd));
+    
+    % Assign values for each cell
+    for cellSectorAngle = cellSectorAngles
+        cellNames(cellInd) = "Cell " + cellInd;
+        cellLats(cellInd) = cellLat;
+        cellLons(cellInd) = cellLon;
+        cellAngles(cellInd) = cellSectorAngle;
+        cellInd = cellInd + 1;
+    end
+end
+
+% ------------- Criar os transmissores -------------
+
+% Define transmitter parameters using Table 8-2 (b) of Report ITU-R M.[IMT-2020.EVAL]
+fq = 2.6e9; % Carrier frequency (4 GHz) for Dense Urban-eMBB
+antHeight = 25; % m
+txPowerDBm = 44; % Total transmit power in dBm
+txPower = 10.^((txPowerDBm-30)/10); % Convert dBm to W
+
+% Create cell transmitter sites
+txs = txsite('Name',cellNames, ...
+    'Latitude',cellLats, ...
+    'Longitude',cellLons, ...
+    'AntennaAngle',cellAngles, ...
+    'AntennaHeight',antHeight, ...
+    'TransmitterFrequency',fq, ...
+    'TransmitterPower',txPower);
+
+show(txs);
+%Distancia entre antenas
+
+dm = distance(txs,rx) % Unit: m
+dkm = dm / 1000
+
+%Angulo entre antenas
+azFromEast = angle(txs,rx); % Unit: degrees counter-clockwise from East
+
+azFromNorth = -azFromEast + 90; % Convert angle to clockwise from North
+
+% Potencia recebida 
+max_value=-200;
+
+for tx = txs 
+    ss = sigstrength(rx,tx);
+    if(ss>max_value)
+        best_tx=tx;
+        max_value=ss;
+    end
+end
+
+% Link margin ( uma métrica da robustes da comunicação, calculado
+% subtraindo a sensividade do recetor e a potencia recebida
+margin = abs(rx.ReceiverSensitivity - ss);
+
+% Link de comunicações no mapa
+%link(rx,txs)
+link(rx,best_tx)
+
+% Mapa de cobertura do transmissor
+%coverage(txs,'longley-rice','SignalStrengths',-100:5:-60)
+
+%viewer = siteviewer("Basemap","openstreetmap","Buildings",mapa_osm);
+%viewer.Basemap = 'topographic';
+% Show sites on a map
+%show(txs);
 
 %% HANDOVER
 number_steps=17;
@@ -700,23 +846,23 @@ centerSite = txsite('Name','MathWorks Glasgow', ...
     'Longitude',-8.80763);
 
 % ------------- Criar as antenas adjacentes -------------
-numCellSites = 19;
+numCellSites = 7;
 siteDistances = zeros(1,numCellSites);
 siteAngles = zeros(1,numCellSites);
 
 % Definir distance e angulo entre antenas centrais
-isd = 1000; % Inter-site distance
+isd = 1500; % Inter-site distance
 siteDistances(2:7) = isd;
 siteAngles(2:7) = 30:60:360;
 
 % Definir distancia e angulo entre antenas a uma distancia media
-siteDistances(8:13) = 2*isd*cosd(30);
-siteAngles(8:13) = 0:60:300;
-
-% Definir distancia e angulo entre antenas a uma distancia alta
-
-siteDistances(14:19) = 2*isd;
-siteAngles(14:19) = 30:60:360;
+% siteDistances(8:13) = 2*isd*cosd(30);
+% siteAngles(8:13) = 0:60:300;
+% 
+% % Definir distancia e angulo entre antenas a uma distancia alta
+% 
+% siteDistances(14:19) = 2*isd;
+% siteAngles(14:19) = 30:60:360;
 
 % ------------- Definir parametros das células -------------
 
@@ -838,6 +984,31 @@ legend('Antenna 1 Power', 'Antenna 2 Power', 'Overlap')
 %text(7, handover_pot(7, 1), 'Point 7')
 
 hold off
+%% Estudo de capacidade
+numCellSites=7;
+
+num_hab=60e3;
+taxa_util_sim=0.1;
+taxa_pen_merc=0.3;
+taxa_add_tech=0.9;
+
+hab_servir=num_hab*taxa_util_sim*taxa_pen_merc*taxa_add_tech
+
+
+num_channels=3;
+bandwith_channel=20e6; ...Hz
+bandwith_channel_2=25e6; ...Hz
+
+num_users=numCellSites*3;
+num_users=num_users*(ncol*nrow)/2
+
+
+%fprintf("");
+
+left_users=hab_servir-num_users;
+
+num_small_cells=ceil(left_users/32)
+
 
 %% Simulacao ESTG
 
