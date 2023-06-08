@@ -390,7 +390,7 @@ title('Radiation diagram antena triangular');
 
 %% SINR PARA UMA ANTENA
 % ------------- Mapa de SINR para uma antena -------------
-
+mapa_osm="map.osm";
 viewer = siteviewer("Name","SINR uma antena por cel","Basemap","openstreetmap","Buildings",mapa_osm);
 viewer.Basemap = 'topographic';
 rx = rxsite('Name','Casa carlos', ...
@@ -685,6 +685,50 @@ coverage(txs,'longley-rice', ...
 %viewer.Basemap = 'topographic';
 % Show sites on a map
 %show(txs);
+
+%% Line of sight
+
+
+cellNames_rx = strings(1,numCells); % New: Rx Names for each cell.
+
+
+% For each cell site location, populate data for each cell transmitter
+cellInd = 1;
+for siteInd = 1:numCellSites
+    % Compute site location using distance and angle from center site
+    [cellLat,cellLon] = location(centerSite, siteDistances(siteInd), siteAngles(siteInd));
+    
+    % Assign values for each cell
+    for cellSectorAngle = cellSectorAngles
+        cellNames(cellInd) = "Cell " + cellInd;
+        cellNames_rx(cellInd) = "Cell " + cellInd; % New: Rx Names for each cell.
+        cellLats(cellInd) = cellLat;
+        cellLons(cellInd) = cellLon;
+        cellAngles(cellInd) = cellSectorAngle;
+        cellInd = cellInd + 1;
+    end
+end
+
+% ------------- New Section!!!!!!!!!! -------------
+
+% Links entre todas as estações base
+% Create cell transmitter sites
+rxs = rxsite('Name',cellNames_rx, ...
+    'Latitude',cellLats, ...
+    'Longitude',cellLons, ...
+    'AntennaAngle',cellAngles, ...
+    'AntennaHeight',antHeight);
+
+% Launch Site Viewer
+mapa_osm="map.osm";
+viewer = siteviewer("Name","LOS between Base Stations","Basemap","openstreetmap","Buildings",mapa_osm);
+viewer.Basemap = 'topographic';
+
+show(txs)
+show(rxs)
+for tx = txs
+    los(tx, rxs)
+end
 %% BEST TX (REMOVE?)
 mapa_osm="map.osm";
 viewer = siteviewer("Name","BestTx","Basemap","openstreetmap","Buildings",mapa_osm);
