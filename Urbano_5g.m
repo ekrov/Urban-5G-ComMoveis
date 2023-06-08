@@ -481,9 +481,10 @@ rxGain = 0; % dBi
 rxAntennaHeight = 1.5; % m
 
 % Display SINR map
-if isvalid(f)
-    close(f)
-end
+%if isvalid(f)
+%    close(f)
+%end
+
 %sinr(txs,'freespace', ...
 sinr(txs,'longley-rice', ...
     'ReceiverGain',rxGain, ...
@@ -514,7 +515,7 @@ siteDistances = zeros(1,numCellSites);
 siteAngles = zeros(1,numCellSites);
 
 % Definir distance e angulo entre antenas centrais
-isd = 1500; % Inter-site distance
+isd = 2000; % Inter-site distance
 siteDistances(2:7) = isd;
 siteAngles(2:7) = 30:60:360;
 
@@ -672,10 +673,10 @@ show(txs);
 
 %Receiver
 %Casa 39.74120486553289, -8.814761942942786
-rx = rxsite('Name','Casa carlos', ...
-       'Latitude',39.74120, ...
-       'Longitude',-8.81476)
-show(rx);
+%rx = rxsite('Name','Casa carlos', ...
+%       'Latitude',39.74120, ...
+%       'Longitude',-8.81476)
+%show(rx);
 
 % Mapa de cobertura do transmissor
 coverage(txs,'longley-rice', ...
