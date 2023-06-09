@@ -1,14 +1,14 @@
 %% Urban 5G Simulation
 % This MATLAB live script simulates an urban 5G network. It includes various sections for creating antennas, generating base stations, plotting SINR maps, analyzing coverage, examining line of sight between transmitters, finding the best transmitter, performing handover analysis, and studying network capacity.
 
-%% Antennas and their radiation patterns
-% In this section, we create different types of antennas and their radiation patterns. The function Create_Antennas returns four antenna objects: triangular, rectangular, circular, and a microstrip antenna. These antennas objects are stored in variables 'p_triang', 'p_rect', 'p_Circle', and 'p_mc', respectively. The function 'Plot_Antennas' is then used to visualize these antenna's patterns.
+%% Antenas e seus diagramas de radiacao
+%In this section, we create different types of antennas and their radiation patterns. The function Create_Antennas returns four antenna objects: triangular, rectangular, circular, and a microstrip antenna. These antennas objects are stored in variables 'p_triang', 'p_rect', 'p_Circle', and 'p_mc', respectively. The function 'Plot_Antennas' is then used to visualize these antenna's patterns.
 
 [p_triang, p_rect, p_Circle, p_mc] = Create_Antennas();
 
 Plot_Antennas(p_triang, p_rect, p_Circle, p_mc);
 
-%% Generating Base Stations with a Single Antenna per Cell
+%% Generate Base Stations with a Single Antenna per Cell
 % In this section, we generate a specified number of base stations (`numCellSites`) with a single antenna each. The `Generate_Simple_Txs` function is used to create the base stations, and the variable `isd` represents the inter-site distance between the base stations. After creating the base stations, we assign the triangular antenna pattern `p_triang` to each base station.
 
 numCellSites = 7;
@@ -250,7 +250,7 @@ scatter(-8.81155, -56.536, 'filled')
 legend('Antenna 1 Power', 'Antenna 2 Power', 'Overlap')
 
 hold off
-%% Network Capacity Study
+%% Estudo de capacidade
 % In this section, we study the network capacity based on various parameters. We set the number of base stations, number of users, number of channels, bandwidth per channel, and other factors. We calculate the number of users that can be served by the base stations and determine the number of additional small cells needed to serve the remaining users. Finally, we display the results of the capacity study.
 
 numCellSites=7;
@@ -279,7 +279,7 @@ fprintf("Número de Utilizadores servidos por Macro Cells:\t%d\n", num_users);
 fprintf("Número de Utilizadores restantes sem serviço (áreas mais densas):\t%d\n", left_users);
 fprintf("Número de Pico Cells recomendadas:\t%d\n", num_small_cells);
 
-%% Stage 2
-% This script contains the code about the Stage 2 of this work related to Localized coverage simulation (broadband simulation)
+%% Etapa 2
+% This script contains the code about the Stage 2 of this work reta
 
 Main_Etapa_2
