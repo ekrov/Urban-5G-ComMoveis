@@ -560,6 +560,13 @@ end
 
 % Define transmitter parameters using Table 8-2 (b) of Report ITU-R M.[IMT-2020.EVAL]
 fq = 2.6e9; % Carrier frequency (4 GHz) for Dense Urban-eMBB
+fqs = [2.5825e9, 2.520e9, 2.640e9, ...
+        2.5825e9, 2.520e9, 2.640e9, ...
+        2.5825e9, 2.520e9, 2.640e9, ...
+        2.5825e9, 2.520e9, 2.640e9, ...
+        2.5825e9, 2.520e9, 2.640e9, ...
+        2.5825e9, 2.520e9, 2.640e9, ...
+        2.5825e9, 2.520e9, 2.640e9];
 antHeight = 25; % m
 txPowerDBm = 44; % Total transmit power in dBm
 txPower = 10.^((txPowerDBm-30)/10); % Convert dBm to W
@@ -570,7 +577,7 @@ txs = txsite('Name',cellNames, ...
     'Longitude',cellLons, ...
     'AntennaAngle',cellAngles, ...
     'AntennaHeight',antHeight, ...
-    'TransmitterFrequency',fq, ...
+    'TransmitterFrequency',fqs, ...
     'TransmitterPower',txPower);
 
 % Define array size
@@ -595,10 +602,7 @@ cellAntenna = phased.URA('Size',[nrow ncol], ...
     'Taper',tap, ...
     'ArrayNormal','x');
     
-% Display radiation pattern
-f = figure(5);
-pattern(cellAntenna,fq);
-title('Diagrama radiacao antena no array');
+
 
 % Mostrar mapa oara array antenas 8 por 8
 % Launch Site Viewer
@@ -629,8 +633,11 @@ sinr(txs,'longley-rice', ...
     'MaxRange',isd, ...
     'Resolution',isd/20)
 
-
-
+%%
+% Display radiation pattern
+f = figure(5);
+pattern(cellAntenna,fq);
+title('Diagrama radiacao antena no array');
 
 % % Display SINR map
 % if isvalid(f)
@@ -1183,7 +1190,7 @@ tx = txsite("Latitude",lat,...
             "Longitude",lon,...
             "AntennaHeight",3, 'TransmitterFrequency', 2.6e9);
 show(tx);
-
+%pattern(tx);
 
 
 % ========================================================================
@@ -1323,7 +1330,7 @@ plot(pd, "LegendTitle", legendTitle, "Colormap", 'turbo');            % plot poi
 contour(pd, "LegendTitle", legendTitle, "Colormap", 'turbo');         % plot countour
 
 show(tx);
-pattern(tx);
+%pattern(tx);
 %% Erro das medições e simulados
 % ========================================================================
 % Get file from measurement file
@@ -1398,7 +1405,7 @@ antennaElement = phased.CustomAntennaElement(...
 tx.Antenna = antennaElement;
 
 show(tx);
-pattern(tx);
+%pattern(tx);
 % ========================================================================
 % Calculate difference in covid
 % ========================================================================
