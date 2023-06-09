@@ -38,7 +38,7 @@ siteAngles = zeros(1,numCellSites);
 
 % Definir distance e angulo entre antenas centrais
 siteDistances(2:numCellSites) = isd;
-siteAngles(2:numCellSites) = linspace(30, 360, numCellSites - 1);
+siteAngles(2:numCellSites) = linspace(30, 330, numCellSites - 1);
 
 % ------------- Definir parametros das células -------------
 

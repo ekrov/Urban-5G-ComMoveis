@@ -1,4 +1,4 @@
-function [cellAntenna] = Create_8x8_Antennas_Array(single_antenna)
+function [cellAntenna] = Create_8x8_Antennas_Array(single_antenna,fq)
 % CREATE_8X8_ANTENNAS_ARRAY creates an 8-by-8 rectangular array of antennas.
 %
 % Syntax:
@@ -11,7 +11,8 @@ function [cellAntenna] = Create_8x8_Antennas_Array(single_antenna)
 % Input Arguments:
 %   - single_antenna: An instance of a phased antenna element representing
 %     a single antenna in the array.
-%
+%   - fq: The central frequency used on this simulation
+%    
 % Output Argument:
 %   - cellAntenna: A phased URA object representing the 8-by-8 antenna
 %     array.

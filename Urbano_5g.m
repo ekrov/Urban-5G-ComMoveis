@@ -12,7 +12,7 @@ Plot_Antennas(p_triang, p_rect, p_Circle, p_mc);
 % In this section, we generate a specified number of base stations (`numCellSites`) with a single antenna each. The `Generate_Simple_Txs` function is used to create the base stations, and the variable `isd` represents the inter-site distance between the base stations. After creating the base stations, we assign the triangular antenna pattern `p_triang` to each base station.
 
 numCellSites = 7;
-isd = 1500;
+isd = 2000;
 txs = Generate_Simple_Txs(numCellSites, isd);
 % Assign the antenna element for each cell transmitter
 for tx = txs
